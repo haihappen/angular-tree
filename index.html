@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="Other">
+<head>
+  <meta charset="UTF-8">
+  <title>AngularJS HTML5 Drag & Drop Tree</title>
+  
+  <style>
+    .up {
+      border-top: 2px solid black;
+    }
+    
+    .down {
+      border-bottom: 2px solid black;
+    }
+    
+    .left {
+      border-left: 2px solid black;
+    }
+    
+    .right {
+      border-right: 2px solid black;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <ul ng-controller="treeCtrl" ng-init="nodes = [{name: 'Node 1'}, {name: 'Node 2'}, {name: 'Node 3'}, {name: 'Node 4'}, {name: 'Node 5'}]">
+      <li ng-repeat="node in nodes" draggable="true">
+        {{node.name}}
+      </li>
+    </ul>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
+  <script src="javascripts/tree.js"></script>
+  <script src="javascripts/app.js"></script>
+</body>
+</html>
