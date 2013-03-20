@@ -10,7 +10,8 @@ basePath = ''
 files = [
   JASMINE,
   JASMINE_ADAPTER,
-  'test/lib/*.js',
+  'test/lib/angular.js',
+  'test/lib/angular-mocks.js',
   'src/*.coffee',
   'test/**/*Spec.coffee'
 ]
