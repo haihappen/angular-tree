@@ -1,38 +1,43 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="Other">
+<html lang="en" ng-app="angularTree">
 <head>
   <meta charset="UTF-8">
-  <title>AngularJS HTML5 Drag & Drop Tree</title>
-  
+  <title>angular-tree</title>
+
   <style>
-    .up {
+    li {
+      border: 2px solid transparent;
+    }
+    li.above {
       border-top: 2px solid black;
     }
-    
-    .down {
+
+    li.below {
       border-bottom: 2px solid black;
     }
-    
-    .left {
-      border-left: 2px solid black;
+
+    li.to {
+      border: 2px solid black;
     }
-    
-    .right {
-      border-right: 2px solid black;
+
+    li.current {
+      background: blue;
     }
   </style>
 </head>
 <body>
   <div>
-    <ul ng-controller="treeCtrl" ng-init="nodes = [{name: 'Node 1'}, {name: 'Node 2'}, {name: 'Node 3'}, {name: 'Node 4'}, {name: 'Node 5'}]">
-      <li ng-repeat="node in nodes" draggable="true">
-        {{node.name}}
+    <ul angular-tree ng-init="children = [{text: 'Node 0'}, {text: 'Node 1'}, {text: 'Node 2', children: [{ text: 'Node 2.1' }, { text: 'Node 2.2' } ]}, {text: 'Node 3'}, {text: 'Node 4'}]">
+      <li ng-repeat="child in children" draggable="true" ng-class="($index == $parent.current) ? position : ''">
+        {{child.text}}
       </li>
     </ul>
+
+    <button ng-click="children[2].children.push({ text: 'Node 2.3' }, { text: 'Node 2.4' })" ng-hide="children[2].children.length > 2">Add More to Node 2</button>
+    <button ng-click="children.push({text: 'Node 5', children: [{ text: 'Node 5.1' }, { text: 'Node 5.2' }]})" ng-hide="children.length > 5">Add Even More</button>
   </div>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
-  <script src="javascripts/tree.js"></script>
-  <script src="javascripts/app.js"></script>
+  <script src="test/lib/angular.js"></script>
+  <script src="build/tree.js"></script>
 </body>
 </html>

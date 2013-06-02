@@ -12,7 +12,7 @@ files = [
   JASMINE_ADAPTER,
   'test/lib/angular.js',
   'test/lib/angular-mocks.js',
-  'src/*.coffee',
+  'src/tree.coffee',
   'test/**/*Spec.coffee'
 ]
 
