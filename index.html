@@ -2,7 +2,7 @@
 <html lang="en" ng-app="angularTree">
 <head>
   <meta charset="UTF-8">
-  <title>angular-tree</title>
+    <title>angular-tree</title>
 
   <style>
     li {
@@ -23,18 +23,20 @@
     li.current {
       background: blue;
     }
+
+    li.dragging,
+    li.dragging li {
+      border-color: transparent;
+    }
   </style>
 </head>
 <body>
   <div>
-    <ul angular-tree ng-init="children = [{text: 'Node 0'}, {text: 'Node 1'}, {text: 'Node 2', children: [{ text: 'Node 2.1' }, { text: 'Node 2.2' } ]}, {text: 'Node 3'}, {text: 'Node 4'}]">
-      <li ng-repeat="child in children" draggable="true" ng-class="($index == $parent.current) ? position : ''">
+    <ul angular-tree ng-init="children = [{text: 'Node 0'}, {text: 'Node 1'}, {text: 'Node 2', children: [{ text: 'Node 2.1' }, { text: 'Node 2.2' }]}, {text: 'Node 3'}, {text: 'Node 4'}]">
+      <li ng-repeat="child in children" draggable="true" ng-class="(child == current) ? position : ''">
         {{child.text}}
       </li>
     </ul>
-
-    <button ng-click="children[2].children.push({ text: 'Node 2.3' }, { text: 'Node 2.4' })" ng-hide="children[2].children.length > 2">Add More to Node 2</button>
-    <button ng-click="children.push({text: 'Node 5', children: [{ text: 'Node 5.1' }, { text: 'Node 5.2' }]})" ng-hide="children.length > 5">Add Even More</button>
   </div>
 
   <script src="test/lib/angular.js"></script>

@@ -4,18 +4,27 @@ angular.module('angularTree').directive 'angularTree', ->
   restrict: 'A'
 
   controller: ($scope) ->
-    $scope.$watch 'to', (to) ->
-      return unless to?
-      return if $scope.position != 'to' and to == $scope.from
+    childOf = (from, to) ->
+      while to
+        return true if from.$id == to.$id
+        to = to.$parent
+      false
 
-      child = $scope.children.splice($scope.from, 1)[0]
+    $scope.$watch 'to', ->
+      return unless $scope.to?
+      return if childOf($scope.from, $scope.to)
+
+      child = $scope.from.$parent.children.splice($scope.from.$index, 1)[0]
       switch $scope.position
         when 'above'
-          $scope.children.splice to, 0, child
+          $scope.to.$parent.children.splice $scope.to.$index, 0, child
         when 'below'
-          $scope.children.splice to + 1, 0, child
+          $scope.to.$parent.children.splice $scope.to.$index + 1, 0, child
         when 'to'
-          ($scope.children[to].children ||= []).push child
+          $scope.to.child.children.push child
+
+      delete $scope.to
+      delete $scope.from
 
   compile: (element) ->
     template = element.clone()
@@ -24,50 +33,59 @@ angular.module('angularTree').directive 'angularTree', ->
     (scope) ->
       scope.template = template[0].outerHTML
 
-angular.module('angularTree').directive 'draggable', ($compile) ->
+
+angular.module('angularTree').directive 'draggable', ($compile, $rootScope) ->
     restrict: 'A'
 
     controller: ($scope) ->
       $scope.$watch 'y', ->
-        $scope.$parent.position = switch
+        $rootScope.position = switch
           when $scope.y < $scope.top + $scope.height * 0.25 then 'above'
           when $scope.y < $scope.top + $scope.height * 0.75 then 'to'
           when $scope.y < $scope.top + $scope.height then 'below'
 
     link: (scope, element) ->
+      scope.children = scope.child.children ||= []
+
       scope.$watch 'children', (children) ->
         return unless children?
+        return if children.length == 0
 
         template = angular.element(scope.template)
         $compile(template)(scope)
         element.append template
 
-      scope.children = scope.child.children
+      element.bind 'dragstart', (e) ->
+        $rootScope.$apply ->
+          $rootScope.from = scope
 
-      element.bind 'dragstart', ->
-        scope.$apply ->
-          scope.$parent.from = scope.$index
-          scope.$parent.to = null
+        element.addClass 'dragging'
+        e.stopPropagation()
 
-      element.bind 'drop', ->
-        scope.$apply ->
-          scope.$parent.current = null
-          scope.$parent.to = scope.$index
+      element.bind 'drop', (e) ->
+        $rootScope.$apply ->
+          $rootScope.to = scope
+          $rootScope.current = null
+
+        element.removeClass 'dragging'
+        e.stopPropagation()
 
       element.bind 'dragover', (e) ->
-        scope.$apply ->
-          scope.$parent.current = scope.$index
+        e.dataTransfer.dropEffect = 'move'
+        $rootScope.$apply ->
+          $rootScope.current = scope.child
 
+        scope.$apply ->
           scope.top    = element[0].offsetTop
           scope.height = element[0].offsetHeight
           scope.y      = e.clientY
 
-        # Required to get the drop event to work. Otherwise the browser will ignore it.
-        e.preventDefault()
         e.stopPropagation()
 
+        # Required to get the drop event to work. Otherwise the browser will ignore it.
+        e.preventDefault()
+
       element.bind 'dragleave', ->
-        scope.$apply ->
-          scope.$parent.current = null
-
-
+        element.removeClass 'dragging'
+        $rootScope.$apply ->
+          $rootScope.current = null
