@@ -1,11 +1,6 @@
-describe 'directive', ->
-  scope = element = null
-
-
-  beforeEach module 'angularTree'
-  beforeEach inject ($rootScope, $compile) ->
-    scope = $rootScope.$new()
-    element = $compile('<ul angular-tree><li ng-repeat="child in children" draggable="true">{{child.text}}</li></ul>')(scope)
+describe 'angular-tree directive', ->
+  beforeEach ->
+    compileElement('<ul angular-tree><li ng-repeat="child in children" draggable="true">{{child.text}}</li></ul>')
     scope.$apply ->
       scope.children = (text: i for i in [0..4])
 

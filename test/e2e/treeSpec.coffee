@@ -1,16 +1,12 @@
-describe 'directive', ->
-  scope = element = null
-
+describe 'angular-tree directive', ->
   html = -> element[0].outerHTML
 
   selector = (string) ->
     new RegExp(string.replace(/((<\/?\w+))|</g, '$1.*').replace(/\n/g, '.*').replace(/\s/g, ''))
 
 
-  beforeEach module 'angularTree'
-  beforeEach inject ($rootScope, $compile) ->
-    scope = $rootScope.$new()
-    element = $compile('<ul angular-tree><li ng-repeat="child in children" draggable="true">{{child.text}}</li></ul>')(scope)
+  beforeEach ->
+    compileElement('<ul angular-tree><li ng-repeat="child in children" draggable="true">{{child.text}}</li></ul>')
 
 
   it 'compiles to ul', ->

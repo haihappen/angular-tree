@@ -15,6 +15,7 @@ module.exports = (config) ->
       'vendor/components/angular/angular.js',
       'vendor/components/angular-mocks/angular-mocks.js',
       'src/tree.coffee',
+      'test/helpers/*.coffee',
       'test/**/*Spec.coffee'
     ]
 
