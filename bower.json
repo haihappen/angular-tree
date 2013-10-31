@@ -1,0 +1,18 @@
+{
+  "name": "angular-tree",
+  "version": "0.0.0",
+  "homepage": "https://github.com/haihappen/angular-tree",
+  "authors": [
+    "Mario Uher <uher.mario@gmail.com>"
+  ],
+  "description": "HTML5 based drag and drop tree powered by Angular",
+  "main": "build/tree.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

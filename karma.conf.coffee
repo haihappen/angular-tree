@@ -12,8 +12,8 @@ module.exports = (config) ->
 
     # list of files / patterns to load in the browser
     files: [
-      'test/lib/angular.js',
-      'test/lib/angular-mocks.js',
+      'vendor/components/angular/angular.js',
+      'vendor/components/angular-mocks/angular-mocks.js',
       'src/tree.coffee',
       'test/**/*Spec.coffee'
     ]
