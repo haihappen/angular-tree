@@ -1,55 +1,135 @@
 describe 'angular-tree directive', ->
   beforeEach ->
-    compileElement('<ul angular-tree><li ng-repeat="child in children" draggable="true">{{child.text}}</li></ul>')
     scope.$apply ->
-      scope.children = (text: i for i in [0..4])
+      scope.children = (value: i, children: [] for i in [0..4])
+    compileElement('<ul angular-tree><li ng-repeat="child in children" draggable="true"></li></ul>')
 
 
-  describe 'moving children', ->
-    beforeEach ->
-      scope.$apply ->
-        scope.from = scope.$new()
-        scope.from.$index = 4
-
-    describe 'above', ->
-      beforeEach ->
-        scope.$apply ->
-          scope.position = 'above'
+  describe 'dragging an element', ->
+    it 'sets from on scope', ->
+      scope.$broadcast 'dragstart', scope.children, 4
+      expect(scope.from).toEqual children: scope.children, index: 4
+      expect(scope.to).toBeUndefined
 
 
-      it 'adds child above another', ->
-        scope.$apply ->
-          scope.to = scope.$new()
-          scope.to.$index = 0
+    describe 'over another element', ->
+      it 'sets to on scope', ->
+        scope.$broadcast 'dragover', scope.children, 3
+        expect(scope.to).toEqual children: scope.children, index: 3
 
-        expect(child.text for child in scope.children).toEqual [4, 0, 1, 2, 3]
-
-
-    describe 'below', ->
-      beforeEach ->
-        scope.$apply ->
-          scope.position = 'below'
+        scope.$broadcast 'dragleave', scope.children, 3
+        expect(scope.to).toBeUndefined
 
 
-      it 'adds child below another', ->
-        scope.$apply ->
-          scope.to = scope.$new()
-          scope.to.$index = 0
+  describe 'dropping on another element', ->
+    it 'does not move the element to itself', ->
+      scope.$broadcast 'dragstart', scope.children, 2
+      scope.$broadcast 'dragover', scope.children, 2
+      scope.$broadcast 'drop'
 
-        expect(child.text for child in scope.children).toEqual [0, 4, 1, 2, 3]
+      expect(scope.children).toEqual jsyaml.load '''
+        - value: 0
+          children: []
+        - value: 1
+          children: []
+        - value: 2
+          children: []
+        - value: 3
+          children: []
+        - value: 4
+          children: []
+      '''
 
 
-    describe 'to', ->
-      beforeEach ->
-        scope.$apply ->
-          scope.position = 'to'
+    it 'moves the element above the element', ->
+      scope.$broadcast 'dragstart', scope.children, 2
+      scope.$broadcast 'dragover', scope.children, 1
+      scope.$broadcast 'drop'
+
+      expect(scope.children).toEqual jsyaml.load '''
+        - value: 0
+          children: []
+        - value: 2
+          children: []
+        - value: 1
+          children: []
+        - value: 3
+          children: []
+        - value: 4
+          children: []
+      '''
 
 
-      it 'adds child to another', ->
-        scope.$apply ->
-          scope.to = scope.children[0]
-          scope.to.$index = 0
-          scope.to.child = children: []
+    it 'moves the last element above the first', ->
+      scope.$broadcast 'dragstart', scope.children, 4
+      scope.$broadcast 'dragover', scope.children, 0
+      scope.$broadcast 'drop'
 
-        expect(child.text for child in scope.children).toEqual [0, 1, 2, 3]
-        expect(child.text for child in scope.children[0].child.children).toEqual [4]
+      expect(scope.children).toEqual jsyaml.load '''
+        - value: 4
+          children: []
+        - value: 0
+          children: []
+        - value: 1
+          children: []
+        - value: 2
+          children: []
+        - value: 3
+          children: []
+      '''
+
+
+    it 'moves the element below the element', ->
+      scope.$broadcast 'dragstart', scope.children, 2
+      scope.$broadcast 'dragover', scope.children, 3
+      scope.$broadcast 'drop'
+
+      expect(scope.children).toEqual jsyaml.load '''
+        - value: 0
+          children: []
+        - value: 1
+          children: []
+        - value: 3
+          children: []
+        - value: 2
+          children: []
+        - value: 4
+          children: []
+      '''
+
+
+    it 'moves the element inside another element', ->
+      scope.$broadcast 'dragstart', scope.children, 2
+      scope.$broadcast 'dragover', scope.children[3].children, 0
+      scope.$broadcast 'drop'
+
+      expect(scope.children).toEqual jsyaml.load '''
+        - value: 0
+          children: []
+        - value: 1
+          children: []
+        - value: 3
+          children:
+            - value: 2
+              children: []
+        - value: 4
+          children: []
+      '''
+
+      # It moves element out again
+      scope.$broadcast 'dragstart', scope.children[2].children, 0
+      scope.$broadcast 'dragover', scope.children, 2
+      scope.$broadcast 'drop'
+
+      expect(scope.children).toEqual jsyaml.load '''
+        - value: 0
+          children: []
+        - value: 1
+          children: []
+        - value: 2
+          children: []
+        - value: 3
+          children: []
+        - value: 4
+          children: []
+      '''

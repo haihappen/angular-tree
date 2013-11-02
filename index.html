@@ -2,7 +2,7 @@
 <html lang="en" ng-app="angularTree">
 <head>
   <meta charset="UTF-8">
-    <title>angular-tree</title>
+  <title>angular-tree</title>
 
   <style>
     li {
@@ -31,15 +31,21 @@
   </style>
 </head>
 <body>
-  <div>
-    <ul angular-tree ng-init="children = [{text: 'Node 0'}, {text: 'Node 1'}, {text: 'Node 2', children: [{ text: 'Node 2.1' }, { text: 'Node 2.2' }]}, {text: 'Node 3'}, {text: 'Node 4'}]">
-      <li ng-repeat="child in children" draggable="true" ng-class="(child == current) ? position : ''">
+  <div ng-controller="ChildrenCtrl">
+    <ul angular-tree>
+      <li ng-repeat="child in children" draggable="true">
         {{child.text}}
       </li>
     </ul>
   </div>
 
-  <script src="test/lib/angular.js"></script>
+  <script src="vendor/components/angular/angular.js"></script>
   <script src="build/tree.js"></script>
+
+  <script>
+    angular.module('angularTree').controller('ChildrenCtrl', function($scope) {
+      $scope.children = [{text: 'Node 0'}, {text: 'Node 1'}, {text: 'Node 2'}, {text: 'Node 3'}, {text: 'Node 4'}]
+    })
+  </script>
 </body>
 </html>

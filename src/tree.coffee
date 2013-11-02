@@ -10,28 +10,21 @@ angular.module('angularTree').directive 'angularTree', ->
         to = to.$parent
       false
 
-    $scope.$watch 'to', ->
-      return unless $scope.to?
-      return if childOf($scope.from, $scope.to)
+    $scope.$on 'dragstart', (_, children, index) ->
+      $scope.from = children: children, index: index
 
-      child = $scope.from.$parent.children.splice($scope.from.$index, 1)[0]
-      switch $scope.position
-        when 'above'
-          $scope.to.$parent.children.splice $scope.to.$index, 0, child
-        when 'below'
-          $scope.to.$parent.children.splice $scope.to.$index + 1, 0, child
-        when 'to'
-          $scope.to.child.children.push child
+    $scope.$on 'dragover', (_, children, index) ->
+      $scope.to = children: children, index: index
 
-      delete $scope.to
-      delete $scope.from
+    $scope.$on 'dragleave', ->
+      $scope.to = undefined
+
+    $scope.$on 'drop', (_, direction) ->
+      $scope.to.children.splice($scope.to.index, 0, $scope.from.children.splice($scope.from.index, 1)[0])
 
   compile: (element) ->
-    template = element.clone()
-    template.removeAttr 'ng-init'
-
     (scope) ->
-      scope.template = template[0].outerHTML
+      scope.template = element.clone().outerHTML
 
 
 angular.module('angularTree').directive 'draggable', ($compile, $rootScope) ->
@@ -56,16 +49,13 @@ angular.module('angularTree').directive 'draggable', ($compile, $rootScope) ->
         element.append template
 
       element.bind 'dragstart', (e) ->
-        $rootScope.$apply ->
-          $rootScope.from = scope
+        scope.$emit 'dragstart', scope.children, scope.children.indexOf(scope.child)
 
         element.addClass 'dragging'
         e.stopPropagation()
 
       element.bind 'drop', (e) ->
-        $rootScope.$apply ->
-          $rootScope.to = scope
-          $rootScope.current = null
+        scope.$emit 'drop', scope.children, scope.children.indexOf(scope.child)
 
         element.removeClass 'dragging'
         e.stopPropagation()

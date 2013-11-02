@@ -16,28 +16,22 @@
           }
           return false;
         };
-        return $scope.$watch('to', function() {
-          var child;
-          if ($scope.to == null) {
-            return;
-          }
-          if (childOf($scope.from, $scope.to)) {
-            return;
-          }
-          child = $scope.from.$parent.children.splice($scope.from.$index, 1)[0];
-          switch ($scope.position) {
-            case 'above':
-              $scope.to.$parent.children.splice($scope.to.$index, 0, child);
-              break;
-            case 'below':
-              $scope.to.$parent.children.splice($scope.to.$index + 1, 0, child);
-              break;
-            case 'to':
-              $scope.to.child.children.push(child);
-          }
-          delete $scope.to;
-          return delete $scope.from;
+        $scope.$on('dragstart', function(_, children, index) {
+          return $scope.from = {
+            children: children,
+            index: index
+          };
         });
+        $scope.$on('dragover', function(_, children, index) {
+          return $scope.to = {
+            children: children,
+            index: index
+          };
+        });
+        $scope.$on('dragleave', function() {
+          return $scope.to = void 0;
+        });
+        return $scope.$on('drop', function(_, direction) {});
       },
       compile: function(element) {
         var template;
@@ -83,38 +77,14 @@
           return element.append(template);
         });
         element.bind('dragstart', function(e) {
-          $rootScope.$apply(function() {
-            return $rootScope.from = scope;
-          });
+          scope.$emit('dragstart', scope.children, scope.children.indexOf(scope.child));
           element.addClass('dragging');
           return e.stopPropagation();
         });
-        element.bind('drop', function(e) {
-          $rootScope.$apply(function() {
-            $rootScope.to = scope;
-            return $rootScope.current = null;
-          });
+        return element.bind('drop', function(e) {
+          scope.$emit('drop', scope.children, scope.children.indexOf(scope.child));
           element.removeClass('dragging');
           return e.stopPropagation();
-        });
-        element.bind('dragover', function(e) {
-          e.dataTransfer.dropEffect = 'move';
-          $rootScope.$apply(function() {
-            return $rootScope.current = scope.child;
-          });
-          scope.$apply(function() {
-            scope.top = element[0].offsetTop;
-            scope.height = element[0].offsetHeight;
-            return scope.y = e.clientY;
-          });
-          e.stopPropagation();
-          return e.preventDefault();
-        });
-        return element.bind('dragleave', function() {
-          element.removeClass('dragging');
-          return $rootScope.$apply(function() {
-            return $rootScope.current = null;
-          });
         });
       }
     };
