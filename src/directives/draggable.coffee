@@ -1,4 +1,4 @@
-angular.module('angularTree').directive 'draggable', ($compile, $rootScope) ->
+angular.module('angularTree').directive 'draggable', ($compile, $rootScope, mousePosition) ->
     restrict: 'A'
 
     controller: ($scope) ->
