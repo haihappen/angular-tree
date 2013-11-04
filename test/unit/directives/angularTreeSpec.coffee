@@ -9,7 +9,7 @@ describe 'angular-tree directive', ->
     it 'sets from on scope', ->
       scope.$broadcast 'dragstart', scope.children, 4
       expect(scope.from).toEqual children: scope.children, index: 4
-      expect(scope.to).toBeUndefined
+      expect(scope.to).toBeUndefined()
 
 
     describe 'over another element', ->
@@ -18,7 +18,7 @@ describe 'angular-tree directive', ->
         expect(scope.to).toEqual children: scope.children, index: 3
 
         scope.$broadcast 'dragleave', scope.children, 3
-        expect(scope.to).toBeUndefined
+        expect(scope.to).toBeUndefined()
 
 
   describe 'dropping on another element', ->
