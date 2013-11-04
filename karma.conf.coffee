@@ -17,6 +17,7 @@ module.exports = (config) ->
       'vendor/components/js-yaml/js-yaml.js',
       'src/**/*.coffee',
       'test/helpers/*.coffee',
+      'test/helpers/*.js',
       'test/**/*Spec.coffee'
     ]
 
