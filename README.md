@@ -1,10 +1,10 @@
 # angular-tree
 
-## Usage
+## Installation
 
-To build the master version, check out the source and then run
+To use the master version, check out the source and then run
 ```sh
-coffee -cj build/angularTree.js src/angularTree.coffee src/directives/angularTree.coffee src/directives/draggable.coffee
+coffee -cj build/angularTree.js src/**/*.coffee
 ```
 
 ## License (the MIT license)
