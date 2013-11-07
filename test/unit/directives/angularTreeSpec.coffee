@@ -1,8 +1,15 @@
 describe 'angular-tree directive', ->
+  outline = (children = scope.children) ->
+    for child in children
+      if child.children.length
+        [child.value, outline(child.children)]
+      else
+        child.value
+
   beforeEach ->
+    compileElement '<ul angular-tree><li ng-repeat="child in children" draggable="true"></li></ul>'
     scope.$apply ->
       scope.children = (value: i, children: [] for i in [0..4])
-    compileElement('<ul angular-tree><li ng-repeat="child in children" draggable="true"></li></ul>')
 
 
   describe 'dragging an element', ->
@@ -27,18 +34,7 @@ describe 'angular-tree directive', ->
       scope.$broadcast 'dragover', scope.children, 2
       scope.$broadcast 'drop'
 
-      expect(scope.children).toEqual jsyaml.load '''
-        - value: 0
-          children: []
-        - value: 1
-          children: []
-        - value: 2
-          children: []
-        - value: 3
-          children: []
-        - value: 4
-          children: []
-      '''
+      expect(outline()).toEqual [0..4]
 
 
     it 'moves the element above the element', ->
@@ -46,18 +42,7 @@ describe 'angular-tree directive', ->
       scope.$broadcast 'dragover', scope.children, 1
       scope.$broadcast 'drop'
 
-      expect(scope.children).toEqual jsyaml.load '''
-        - value: 0
-          children: []
-        - value: 2
-          children: []
-        - value: 1
-          children: []
-        - value: 3
-          children: []
-        - value: 4
-          children: []
-      '''
+      expect(outline()).toEqual [0, 2, 1, 3, 4]
 
 
     it 'moves the last element above the first', ->
@@ -65,18 +50,7 @@ describe 'angular-tree directive', ->
       scope.$broadcast 'dragover', scope.children, 0
       scope.$broadcast 'drop'
 
-      expect(scope.children).toEqual jsyaml.load '''
-        - value: 4
-          children: []
-        - value: 0
-          children: []
-        - value: 1
-          children: []
-        - value: 2
-          children: []
-        - value: 3
-          children: []
-      '''
+      expect(outline()).toEqual [4, 0, 1, 2, 3]
 
 
     it 'moves the element below the element', ->
@@ -84,18 +58,7 @@ describe 'angular-tree directive', ->
       scope.$broadcast 'dragover', scope.children, 3
       scope.$broadcast 'drop'
 
-      expect(scope.children).toEqual jsyaml.load '''
-        - value: 0
-          children: []
-        - value: 1
-          children: []
-        - value: 3
-          children: []
-        - value: 2
-          children: []
-        - value: 4
-          children: []
-      '''
+      expect(outline()).toEqual [0, 1, 3, 2, 4]
 
 
     it 'moves the element inside another element', ->
@@ -103,33 +66,11 @@ describe 'angular-tree directive', ->
       scope.$broadcast 'dragover', scope.children[3].children, 0
       scope.$broadcast 'drop'
 
-      expect(scope.children).toEqual jsyaml.load '''
-        - value: 0
-          children: []
-        - value: 1
-          children: []
-        - value: 3
-          children:
-            - value: 2
-              children: []
-        - value: 4
-          children: []
-      '''
+      expect(outline()).toEqual [0, 1, [3, [2]], 4]
 
       # It moves element out again
       scope.$broadcast 'dragstart', scope.children[2].children, 0
       scope.$broadcast 'dragover', scope.children, 2
       scope.$broadcast 'drop'
 
-      expect(scope.children).toEqual jsyaml.load '''
-        - value: 0
-          children: []
-        - value: 1
-          children: []
-        - value: 2
-          children: []
-        - value: 3
-          children: []
-        - value: 4
-          children: []
-      '''
+      expect(outline()).toEqual [0..4]

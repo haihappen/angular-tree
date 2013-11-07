@@ -6,16 +6,6 @@
     return {
       restrict: 'A',
       controller: function($scope) {
-        var childOf;
-        childOf = function(from, to) {
-          while (to) {
-            if (from.$id === to.$id) {
-              return true;
-            }
-            to = to.$parent;
-          }
-          return false;
-        };
         $scope.$on('dragstart', function(_, children, index) {
           return $scope.from = {
             children: children,
@@ -43,68 +33,10 @@
     };
   });
 
-  angular.module('angularTree').directive('draggable', function($compile, $rootScope, mousePosition) {
+  angular.module('angularTree').directive('draggable', function(mousePosition) {
     return {
       restrict: 'A',
-      controller: function($scope) {
-        return $scope.$watch('y', function() {
-          return $rootScope.position = (function() {
-            switch (false) {
-              case !($scope.y < $scope.top + $scope.height * 0.25):
-                return 'above';
-              case !($scope.y < $scope.top + $scope.height * 0.75):
-                return 'to';
-              case !($scope.y < $scope.top + $scope.height):
-                return 'below';
-            }
-          })();
-        });
-      },
-      link: function(scope, element) {
-        var _base;
-        scope.children = (_base = scope.child).children || (_base.children = []);
-        scope.$watch('children', function(children) {
-          var template;
-          if (children == null) {
-            return;
-          }
-          if (children.length === 0) {
-            return;
-          }
-          template = angular.element(scope.template);
-          $compile(template)(scope);
-          return element.append(template);
-        });
-        element.bind('dragstart', function(e) {
-          scope.$emit('dragstart', scope.children, scope.children.indexOf(scope.child));
-          element.addClass('dragging');
-          return e.stopPropagation();
-        });
-        element.bind('drop', function(e) {
-          scope.$emit('drop', scope.children, scope.children.indexOf(scope.child));
-          element.removeClass('dragging');
-          return e.stopPropagation();
-        });
-        element.bind('dragover', function(e) {
-          e.dataTransfer.dropEffect = 'move';
-          $rootScope.$apply(function() {
-            return $rootScope.current = scope.child;
-          });
-          scope.$apply(function() {
-            scope.top = element[0].offsetTop;
-            scope.height = element[0].offsetHeight;
-            return scope.y = e.clientY;
-          });
-          e.stopPropagation();
-          return e.preventDefault();
-        });
-        return element.bind('dragleave', function() {
-          element.removeClass('dragging');
-          return $rootScope.$apply(function() {
-            return $rootScope.current = null;
-          });
-        });
-      }
+      link: function(scope, element) {}
     };
   });
 

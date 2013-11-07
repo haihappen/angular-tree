@@ -14,7 +14,6 @@ module.exports = (config) ->
     files: [
       'vendor/components/angular/angular.js',
       'vendor/components/angular-mocks/angular-mocks.js',
-      'vendor/components/js-yaml/js-yaml.js',
       'src/**/*.coffee',
       'test/helpers/*.coffee',
       'test/helpers/*.js',

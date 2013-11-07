@@ -2,12 +2,6 @@ angular.module('angularTree').directive 'angularTree', ->
   restrict: 'A'
 
   controller: ($scope) ->
-    childOf = (from, to) ->
-      while to
-        return true if from.$id == to.$id
-        to = to.$parent
-      false
-
     $scope.$on 'dragstart', (_, children, index) ->
       $scope.from = children: children, index: index
 
@@ -18,7 +12,7 @@ angular.module('angularTree').directive 'angularTree', ->
       $scope.to = undefined
 
     $scope.$on 'drop', (_, direction) ->
-      $scope.to.children.splice($scope.to.index, 0, $scope.from.children.splice($scope.from.index, 1)[0])
+      $scope.to.children.splice $scope.to.index, 0, $scope.from.children.splice($scope.from.index, 1)[0]
 
   compile: (element) ->
     (scope) ->
