@@ -4,7 +4,7 @@
 
 To use the master version, check out the source and then run
 ```sh
-coffee -cj build/angularTree.js src/**/*.coffee
+coffee -cj angular-tree.js src/**/*.coffee
 ```
 
 ## License (the MIT license)
