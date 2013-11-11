@@ -2,9 +2,28 @@
 
 ## Installation
 
+```sh
+bower install angular-tree
+```
+
 To use the master version, check out the source and then run
 ```sh
 coffee -cj angular-tree.js src/**/*.coffee
+```
+
+## Usage
+
+In your body tag.
+
+```html
+  <ul angular-tree>
+    <li draggable="true">Alice</li>
+    <li draggable="true">Bob</li>
+    <li draggable="true">Charlie</li>
+  </ul>
+
+  <script src="angular.js"></script>
+  <script src="angular-tree.js"></script>
 ```
 
 ## License (the MIT license)
