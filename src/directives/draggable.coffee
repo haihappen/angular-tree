@@ -1,26 +1,23 @@
 angular.module('angularTree').directive 'draggable', (mousePosition) ->
   restrict: 'A'
 
-
-
-      # controller: ($scope) ->
-      # $scope.$watch 'y', ->
-      #   $rootScope.position = switch
-      #     when $scope.y < $scope.top + $scope.height * 0.25 then 'above'
-      #     when $scope.y < $scope.top + $scope.height * 0.75 then 'to'
-      #     when $scope.y < $scope.top + $scope.height then 'below'
+  # controller: ($scope) ->
+  # $scope.$watch 'y', ->
+  #   $rootScope.position = switch
+  #     when $scope.y < $scope.top + $scope.height * 0.25 then 'above'
+  #     when $scope.y < $scope.top + $scope.height * 0.75 then 'to'
+  #     when $scope.y < $scope.top + $scope.height then 'below'
 
   link: (scope, element) ->
+    scope.children = scope.child.children
 
-      # scope.children = scope.child.children ||= []
+    scope.$watchCollection 'children', (children) ->
+      return unless children?.length
 
-      # scope.$watch 'children', (children) ->
-      #   return unless children?
-      #   return if children.length == 0
+      template = angular.element(scope.template)
+      $compile(template)(scope)
+      element.append template
 
-      #   template = angular.element(scope.template)
-      #   $compile(template)(scope)
-      #   element.append template
 
       # element.bind 'dragstart', (e) ->
       #   scope.$emit 'dragstart', scope.children, scope.children.indexOf(scope.child)

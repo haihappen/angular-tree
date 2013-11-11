@@ -26,8 +26,10 @@
         });
       },
       compile: function(element) {
-        return function(scope) {
-          return scope.template = element.clone().outerHTML;
+        var link, template;
+        template = element.clone()[0].outerHTML;
+        return link = function(scope) {
+          return scope.template = template;
         };
       }
     };
@@ -36,7 +38,19 @@
   angular.module('angularTree').directive('draggable', function(mousePosition) {
     return {
       restrict: 'A',
-      link: function(scope, element) {}
+      link: function(scope, element) {
+        scope.children = scope.child.children;
+        return scope.$watchCollection('children', function(children) {
+          var template;
+          if (!!children) {
+            return;
+          }
+          dump('children changed');
+          template = angular.element(scope.template);
+          $compile(template)(scope);
+          return element.append(template);
+        });
+      }
     };
   });
 

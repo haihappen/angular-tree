@@ -15,5 +15,7 @@ angular.module('angularTree').directive 'angularTree', ->
       $scope.to.children.splice $scope.to.index, 0, $scope.from.children.splice($scope.from.index, 1)[0]
 
   compile: (element) ->
-    (scope) ->
-      scope.template = element.clone().outerHTML
+    template = element.clone()[0].outerHTML
+
+    link = (scope) ->
+      scope.template = template
