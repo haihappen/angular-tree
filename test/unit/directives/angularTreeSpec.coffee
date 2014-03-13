@@ -1,4 +1,4 @@
-describe 'angular-tree directive', ->
+describe 'angularTree directive', ->
   outline = (children = scope.children) ->
     for child in children
       if child.children.length
