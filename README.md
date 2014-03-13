@@ -1,9 +1,9 @@
-# angular-tree
+# angularTree
 
 ## Installation
 
 ```sh
-bower install angular-tree
+bower install angularTree
 ```
 
 To use the master version, check out the source and then run
@@ -23,7 +23,7 @@ In your body tag.
   </ul>
 
   <script src="angular.js"></script>
-  <script src="angular-tree.js"></script>
+  <script src="angularTree.js"></script>
 ```
 
 ## License (the MIT license)

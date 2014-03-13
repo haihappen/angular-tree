@@ -1,12 +1,12 @@
 {
-  "name": "angular-tree",
+  "name": "angularTree",
   "version": "0.0.0",
-  "homepage": "https://github.com/haihappen/angular-tree",
+  "homepage": "https://github.com/haihappen/angularTree",
   "authors": [
     "Mario Uher <uher.mario@gmail.com>"
   ],
   "description": "HTML5 based drag and drop tree powered by Angular",
-  "main": "build/tree.js",
+  "main": "angularTree.js",
   "license": "MIT",
   "ignore": [
     "**/.*",

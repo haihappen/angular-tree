@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>mousePosition</title>
 </head>
-<body style="padding: 100px; margin: 0;" ng-controller="SomeCtrl">
+<body style="padding: 100px; margin: 0;" ng-controller="MouseController">
   <div style="height: 200px; width: 200px; outline: 1px solid black;">
     <code>
       left: {{left}}%
@@ -12,11 +12,11 @@
     </code>
   </div>
 
-  <script src="vendor/components/angular/angular.js"></script>
-  <script src="build/angularTree.js"></script>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="angularTree.js"></script>
 
   <script>
-    function SomeCtrl($scope, mousePosition) {
+    function MouseController($scope, mousePosition) {
       var div = angular.element(document.getElementsByTagName('div')[0])
 
       angular.element(document.body).bind('mousemove', function() {
