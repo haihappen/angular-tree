@@ -1,0 +1,22 @@
+{
+  "name": "y",
+  "version": "0.0.0",
+  "description": "HTML5 based drag and drop tree powered by Angular",
+  "main": "angularTree.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "karma start karma.conf.coffee"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com:haihappen/angularTree.git"
+  },
+  "author": "Mario Uher <uher.mario@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/haihappen/angularTree/issues"
+  },
+  "homepage": "https://github.com/haihappen/angularTree"
+}
