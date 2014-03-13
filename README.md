@@ -8,7 +8,7 @@ bower install angularTree
 
 To use the master version, check out the source and then run
 ```sh
-coffee -cj angular-tree.js src/**/*.coffee
+npm install
 ```
 
 ## Usage

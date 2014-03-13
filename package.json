@@ -7,7 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "karma start karma.conf.coffee"
+    "test": "karma start karma.conf.coffee",
+    "prepublish": "coffee -cj angularTree.js src/*.coffee src/**/*.coffee"
   },
   "repository": {
     "type": "git",
