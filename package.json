@@ -1,5 +1,5 @@
 {
-  "name": "y",
+  "name": "angularTree",
   "version": "0.0.0",
   "description": "HTML5 based drag and drop tree powered by Angular",
   "main": "angularTree.js",
@@ -7,8 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "test": "karma start karma.conf.coffee",
-    "prepublish": "coffee -cj angularTree.js src/*.coffee src/**/*.coffee"
+    "test": "node_modules/karma/bin/karma start karma.conf.coffee",
+    "prepublish": "node_modules/coffee-script/bin/coffee -cj angularTree.js src/*.coffee src/**/*.coffee"
   },
   "repository": {
     "type": "git",
@@ -19,5 +19,12 @@
   "bugs": {
     "url": "https://github.com/haihappen/angularTree/issues"
   },
-  "homepage": "https://github.com/haihappen/angularTree"
+  "homepage": "https://github.com/haihappen/angularTree",
+  "devDependencies": {
+    "coffee-script": "~1.7",
+    "karma": "*",
+    "karma-jasmine": "*",
+    "karma-phantomjs-launcher": "*",
+    "karma-coffee-preprocessor": "*"
+  }
 }
