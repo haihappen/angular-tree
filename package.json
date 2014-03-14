@@ -7,8 +7,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "node_modules/karma/bin/karma start karma.conf.coffee",
-    "prepublish": "node_modules/coffee-script/bin/coffee -cj angularTree.js src/*.coffee src/**/*.coffee"
+    "test": "karma start karma.conf.coffee",
+    "prepublish": "coffee -cj angularTree.js src/*.coffee src/**/*.coffee",
+    "postinstall": "bower install"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,7 @@
   },
   "homepage": "https://github.com/haihappen/angularTree",
   "devDependencies": {
+    "bower": "*",
     "coffee-script": "~1.7",
     "karma": "*",
     "karma-jasmine": "*",
