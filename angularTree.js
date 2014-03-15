@@ -25,13 +25,14 @@
           return e.stopPropagation();
         });
         return $scope.$on('drop', function(e, direction) {
-          return $scope.$apply(function() {
+          $scope.$apply(function() {
             var draggable;
             if ($scope.from.children[$scope.from.index].children !== $scope.to.children) {
               draggable = $scope.from.children.splice($scope.from.index, 1)[0];
               return $scope.to.children.splice($scope.to.index, 0, draggable);
             }
           });
+          return e.stopPropagation();
         });
       },
       compile: function(element) {

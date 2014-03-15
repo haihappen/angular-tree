@@ -58,3 +58,19 @@ describe 'draggable directive', ->
     simulate element.find('li')[0], 'drop'
 
     expect(scope.$emit).toHaveBeenCalledWith 'drop'
+
+
+  it 'does not bubble drop event to parents', ->
+    scope.$on 'drop', parentDrop = jasmine.createSpy()
+
+    childElement = angular.element(element.find('li')[1])
+    childScope = childElement.scope()
+
+    childScope.$apply ->
+      childScope.children = (value: "1.#{i}", children: [] for i in [0..1])
+
+    simulate element.find('li')[0], 'dragstart'
+    simulate childElement.find('li')[0], 'dragover'
+    simulate childElement.find('li')[0], 'drop'
+
+    expect(parentDrop).not.toHaveBeenCalled()

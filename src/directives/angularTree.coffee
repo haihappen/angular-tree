@@ -21,6 +21,7 @@ angular.module('angularTree').directive 'angularTree', ->
         unless $scope.from.children[$scope.from.index].children == $scope.to.children
           draggable = $scope.from.children.splice($scope.from.index, 1)[0]
           $scope.to.children.splice $scope.to.index, 0, draggable
+      e.stopPropagation()
 
 
   compile: (element) ->
