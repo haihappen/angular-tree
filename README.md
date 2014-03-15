@@ -1,5 +1,18 @@
 # angularTree
 
+angularTree is a HTML5 drag and drop tree powered by Angular. Unlike other implementations of HTML tree widgets, angularTree allows you to bring your own markup (BYOM 😄).
+
+## Features
+
+angularTree includes (but is not limited to) following features:
+
+* Bring your own Markup
+* AngularJS powered
+* Besides Angular (uh oh) no other dependencies, not even jQuery!
+* Support for modern browsers (IE8+)
+* Written in CoffeeScript
+* A test suite
+
 ## Installation
 
 ```sh
