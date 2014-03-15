@@ -1,4 +1,4 @@
-angular.module('angularTree').directive 'draggable', (mousePosition) ->
+angular.module('angularTree').directive 'draggable', ($compile, mousePosition) ->
   restrict: 'A'
 
   # controller: ($scope) ->
@@ -18,18 +18,33 @@ angular.module('angularTree').directive 'draggable', (mousePosition) ->
       $compile(template)(scope)
       element.append template
 
+    parent = scope.$parent
 
-      # element.bind 'dragstart', (e) ->
-      #   scope.$emit 'dragstart', scope.children, scope.children.indexOf(scope.child)
+    element.on 'dragstart', (e) ->
+      scope.$emit 'dragstart', parent.children, parent.children.indexOf(scope.child)
 
-      #   element.addClass 'dragging'
-      #   e.stopPropagation()
+      element.addClass 'dragging'
+      e.stopPropagation()
 
-      # element.bind 'drop', (e) ->
-      #   scope.$emit 'drop', scope.children, scope.children.indexOf(scope.child)
 
-      #   element.removeClass 'dragging'
-      #   e.stopPropagation()
+    element.bind 'dragover', (e) ->
+      scope.$emit 'dragover', parent.children, parent.children.indexOf(scope.child)
+
+      # e.dataTransfer.dropEffect = 'move'
+
+      # Required to get the drop event to work. Otherwise the browser will ignore it.
+      e.preventDefault()
+      e.stopPropagation()
+
+
+    element.on 'drop', (e) ->
+      scope.$emit 'drop'
+
+      element.removeClass 'dragging'
+      e.stopPropagation()
+
+
+
 
       # element.bind 'dragover', (e) ->
       #   e.dataTransfer.dropEffect = 'move'

@@ -6,23 +6,32 @@
     return {
       restrict: 'A',
       controller: function($scope) {
-        $scope.$on('dragstart', function(_, children, index) {
-          return $scope.from = {
+        $scope.$on('dragstart', function(e, children, index) {
+          $scope.from = {
             children: children,
             index: index
           };
+          return e.stopPropagation();
         });
-        $scope.$on('dragover', function(_, children, index) {
-          return $scope.to = {
+        $scope.$on('dragover', function(e, children, index) {
+          $scope.to = {
             children: children,
             index: index
           };
+          return e.stopPropagation();
         });
-        $scope.$on('dragleave', function() {
-          return $scope.to = void 0;
+        $scope.$on('dragleave', function(e) {
+          $scope.to = void 0;
+          return e.stopPropagation();
         });
-        return $scope.$on('drop', function(_, direction) {
-          return $scope.to.children.splice($scope.to.index, 0, $scope.from.children.splice($scope.from.index, 1)[0]);
+        return $scope.$on('drop', function(e, direction) {
+          return $scope.$apply(function() {
+            var draggable;
+            if ($scope.from.children[$scope.from.index].children !== $scope.to.children) {
+              draggable = $scope.from.children.splice($scope.from.index, 1)[0];
+              return $scope.to.children.splice($scope.to.index, 0, draggable);
+            }
+          });
         });
       },
       compile: function(element) {
@@ -35,12 +44,13 @@
     };
   });
 
-  angular.module('angularTree').directive('draggable', function(mousePosition) {
+  angular.module('angularTree').directive('draggable', function($compile, mousePosition) {
     return {
       restrict: 'A',
       link: function(scope, element) {
+        var parent;
         scope.children = scope.child.children;
-        return scope.$watchCollection('children', function(children) {
+        scope.$watchCollection('children', function(children) {
           var template;
           if (!(children != null ? children.length : void 0)) {
             return;
@@ -48,6 +58,22 @@
           template = angular.element(scope.template);
           $compile(template)(scope);
           return element.append(template);
+        });
+        parent = scope.$parent;
+        element.on('dragstart', function(e) {
+          scope.$emit('dragstart', parent.children, parent.children.indexOf(scope.child));
+          element.addClass('dragging');
+          return e.stopPropagation();
+        });
+        element.bind('dragover', function(e) {
+          scope.$emit('dragover', parent.children, parent.children.indexOf(scope.child));
+          e.preventDefault();
+          return e.stopPropagation();
+        });
+        return element.on('drop', function(e) {
+          scope.$emit('drop');
+          element.removeClass('dragging');
+          return e.stopPropagation();
         });
       }
     };

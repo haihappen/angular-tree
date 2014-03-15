@@ -47,7 +47,7 @@ function extend(destination, source) {
 
 var eventMatchers = {
     'HTMLEvents': /^(?:load|unload|abort|error|select|change|submit|reset|focus|blur|resize|scroll)$/,
-    'MouseEvents': /^(?:click|dblclick|mouse(?:down|up|over|move|out))$/
+    'MouseEvents': /^(?:click|dblclick|mouse(?:down|up|over|move|out)|drag(?:start|over)|drop)$/
 }
 var defaultOptions = {
     pointerX: 0,

@@ -10,29 +10,51 @@ describe 'draggable directive', ->
 
 
   it 'compiles to nested list', ->
-    scope.$apply ->
-      scope.children = (value: i, children: [] for i in [0..4])
-      scope.children[1].children = (value: "1.#{i}", children: [] for i in [0..1])
+    childScope = angular.element(element.find('li')[1]).scope()
 
-    # Find nested list
-    expect(element.find('ul').length).toEqual 1
+    childScope.$apply ->
+      childScope.children = (value: "1.#{i}", children: [] for i in [0..1])
+
+    expect(element.find('li').length).toEqual 7
     expect(element.find('ul').find('li').length).toEqual 2
 
 
   it 'watches children', ->
-    movedChild = null
+    draggable = null
 
     # Remove last element
     scope.$apply ->
-      movedChild = scope.children.pop()
+      draggable = scope.children.pop()
 
     expect(element.find('li').length).toEqual 4
     expect(element.find('ul').length).toEqual 0
 
     # Drop on first element
     scope.$apply ->
-      scope.children[0].children.push movedChild
+      scope.children[0].children.push draggable
 
     expect(element.find('li').length).toEqual 5
     expect(element.find('ul').length).toEqual 1
     expect(element.find('ul').find('li').length).toEqual 1
+
+
+  it 'emits dragstart event', ->
+    spyOn scope, '$emit'
+    simulate element.find('li')[1], 'dragstart'
+
+    expect(scope.$emit).toHaveBeenCalledWith 'dragstart', scope.children, 1
+
+
+  it 'emits dragover event', ->
+    spyOn scope, '$emit'
+    simulate element.find('li')[0], 'dragover'
+
+    expect(scope.$emit).toHaveBeenCalledWith 'dragover', scope.children, 0
+
+
+  it 'emits drop event', ->
+    spyOn scope, '$emit'
+    simulate element.find('li')[1], 'dragstart'
+    simulate element.find('li')[0], 'drop'
+
+    expect(scope.$emit).toHaveBeenCalledWith 'drop'

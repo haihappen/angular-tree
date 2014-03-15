@@ -1,10 +1,11 @@
 describe 'angularTree directive', ->
   outline = (children = scope.children) ->
+    out = []
     for child in children
-      if child.children.length
-        [child.value, outline(child.children)]
-      else
-        child.value
+      out.push child.value
+      out.push outline(child.children) if child.children.length
+    out
+
 
   beforeEach ->
     compileElement '<ul angular-tree><li ng-repeat="child in children" draggable="true"></li></ul>'
@@ -13,64 +14,73 @@ describe 'angularTree directive', ->
 
 
   describe 'dragging an element', ->
-    it 'sets from on scope', ->
-      scope.$broadcast 'dragstart', scope.children, 4
-      expect(scope.from).toEqual children: scope.children, index: 4
+    it 'sets from and to on scope', ->
+      scope.$emit 'dragstart', scope.children, 1
+      expect(scope.from).toEqual children: scope.children, index: 1
       expect(scope.to).toBeUndefined()
 
+      scope.$emit 'dragover', scope.children, 0
+      expect(scope.to).toEqual children: scope.children, index: 0
 
-    describe 'over another element', ->
-      it 'sets to on scope', ->
-        scope.$broadcast 'dragover', scope.children, 3
-        expect(scope.to).toEqual children: scope.children, index: 3
-
-        scope.$broadcast 'dragleave', scope.children, 3
-        expect(scope.to).toBeUndefined()
+      scope.$emit 'dragleave', scope.children, 0
+      expect(scope.to).toBeUndefined()
 
 
   describe 'dropping on another element', ->
     it 'does not move the element to itself', ->
-      scope.$broadcast 'dragstart', scope.children, 2
-      scope.$broadcast 'dragover', scope.children, 2
-      scope.$broadcast 'drop'
+      scope.$emit 'dragstart', scope.children, 1
+      scope.$emit 'dragover', scope.children, 1
+      scope.$emit 'drop'
 
       expect(outline()).toEqual [0..4]
 
 
     it 'moves the element above the element', ->
-      scope.$broadcast 'dragstart', scope.children, 2
-      scope.$broadcast 'dragover', scope.children, 1
-      scope.$broadcast 'drop'
+      scope.$emit 'dragstart', scope.children, 2
+      scope.$emit 'dragover', scope.children, 1
+      scope.$emit 'drop'
 
       expect(outline()).toEqual [0, 2, 1, 3, 4]
 
 
-    it 'moves the last element above the first', ->
-      scope.$broadcast 'dragstart', scope.children, 4
-      scope.$broadcast 'dragover', scope.children, 0
-      scope.$broadcast 'drop'
+    it 'moves the last element above the first element', ->
+      scope.$emit 'dragstart', scope.children, 1
+      scope.$emit 'dragover', scope.children, 0
+      scope.$emit 'drop'
 
-      expect(outline()).toEqual [4, 0, 1, 2, 3]
+      expect(outline()).toEqual [1, 0, 2, 3, 4]
 
 
     it 'moves the element below the element', ->
-      scope.$broadcast 'dragstart', scope.children, 2
-      scope.$broadcast 'dragover', scope.children, 3
-      scope.$broadcast 'drop'
+      scope.$emit 'dragstart', scope.children, 1
+      scope.$emit 'dragover', scope.children, 2
+      scope.$emit 'drop'
 
-      expect(outline()).toEqual [0, 1, 3, 2, 4]
+      expect(outline()).toEqual [0, 2, 1, 3, 4]
+
+
+    it 'moves the element below the last element', ->
+      scope.$emit 'dragstart', scope.children, 1
+      scope.$emit 'dragover', scope.children, 4
+      scope.$emit 'drop'
+
+      expect(outline()).toEqual [0, 2, 3, 4, 1]
 
 
     it 'moves the element inside another element', ->
-      scope.$broadcast 'dragstart', scope.children, 2
-      scope.$broadcast 'dragover', scope.children[3].children, 0
-      scope.$broadcast 'drop'
+      scope.$emit 'dragstart', scope.children, 1
+      scope.$emit 'dragover', scope.children[2].children, 0
+      scope.$emit 'drop'
 
-      expect(outline()).toEqual [0, 1, [3, [2]], 4]
+      expect(outline()).toEqual [0, 2, [1], 3, 4]
 
-      # It moves element out again
-      scope.$broadcast 'dragstart', scope.children[2].children, 0
-      scope.$broadcast 'dragover', scope.children, 2
-      scope.$broadcast 'drop'
 
-      expect(outline()).toEqual [0..4]
+    it 'does not move the element into itself', ->
+      scope.$apply ->
+        scope.children[2] = value: 2, children: [value: 2.1, children: []]
+
+      scope.$emit 'dragstart', scope.children, 2
+      scope.$emit 'dragover', scope.children[2].children, 0
+      scope.$emit 'drop'
+
+      expect(outline()).toEqual [0, 1, 2, [2.1], 3, 4]
