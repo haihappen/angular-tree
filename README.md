@@ -26,7 +26,13 @@ npm install
 
 ## Usage
 
-In your body tag.
+Add angularTree to the list of dependencies.
+
+```js
+angular.module('YourApp', ['angularTree'])
+```
+
+In your HTML you can now use the directive `angular-tree` to define the tree widget, and the `draggable` directive for defining the draggable elements (Note that the value of the directive must equal `"true"` otherwise browser support is not guaranteed).
 
 ```html
   <ul angular-tree>
